@@ -1,0 +1,24 @@
+categories:
+  - name: PDF
+    extensions:
+      - .pdf
+
+  - name: DOC
+    extensions:
+      - .doc
+      - .docx
+      - .docm
+      - .dot
+      - .dotx
+      - .dotm
+      - .rtf
+
+  - name: XLS
+    extensions:
+      - .xls
+      - .xlsx
+      - .xlsm
+      - .xlsb
+      - .xlt
+      - .xltx
+      - .xltm
