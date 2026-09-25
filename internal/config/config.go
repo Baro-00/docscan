@@ -153,7 +153,18 @@ func (c *Config) Validate() error {
 	extensions := make(map[string]string)
 
 	for name, tool := range c.Tools {
-		name = strings.TrimSpace(name)
+		trimmedName := strings.TrimSpace(name)
+
+		if trimmedName == "" {
+			return fmt.Errorf("tool name cannot be empty")
+		}
+
+		if trimmedName != name {
+			return fmt.Errorf(
+				"tool name %q contains leading or trailing whitespace",
+				name,
+			)
+		}
 
 		if name == "" {
 			return fmt.Errorf("tool name cannot be empty")

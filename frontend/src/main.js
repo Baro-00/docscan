@@ -382,8 +382,6 @@ function renderDocuments() {
 
     tbody.innerHTML = '';
 
-    let duplicateCount = 0;
-
     documents.forEach((doc, index) => {
         const row = document.createElement('tr');
 
@@ -416,6 +414,19 @@ function renderDocuments() {
 
         tbody.appendChild(row);
     });
+
+    const duplicateCount = documents.filter(
+        doc => doc.duplicate
+    ).length;
+
+    document.querySelector('#documentCount').textContent =
+        documents.length;
+
+    document.querySelector('#duplicateCount').textContent =
+        duplicateCount;
+
+    document.querySelector('#uniqueCount').textContent =
+        documents.length - duplicateCount;
 
     document.querySelector('#documentCount').textContent =
         documents.length;
