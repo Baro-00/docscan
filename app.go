@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"docscan/internal/analyzer"
 	"docscan/internal/collector"
 	"docscan/internal/config"
 	"docscan/internal/dedup"
@@ -31,6 +32,10 @@ func NewApp() (*App, error) {
 
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+}
+
+func (a *App) GetToolStatus() []analyzer.ToolStatus {
+	return analyzer.CheckTools(a.cfg)
 }
 
 // SelectSourceDirectory otwiera natywny Windows directory picker.
@@ -93,4 +98,26 @@ func (a *App) Collect(
 	}
 
 	return docs, nil
+}
+
+func (a *App) AnalyzeDocument(
+	doc document.Document,
+) (analyzer.Analysis, error) {
+
+	results, err := analyzer.Analyze(
+		a.ctx,
+		doc,
+		a.cfg,
+	)
+	if err != nil {
+		return analyzer.Analysis{}, fmt.Errorf(
+			"analyze document: %w",
+			err,
+		)
+	}
+
+	return analyzer.Analysis{
+		Document: doc,
+		Results:  results,
+	}, nil
 }

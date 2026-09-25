@@ -3,11 +3,17 @@ import './style.css';
 import {
     SelectSourceDirectory,
     SelectOutputDirectory,
+    GetToolStatus,
     Scan,
-    Collect
+    Collect,
+    AnalyzeDocument
 } from '../wailsjs/go/main/App';
-
+    
 let documents = [];
+
+GetToolStatus().then(result => {
+    console.table(result);
+});
 
 document.querySelector('#app').innerHTML = `
 <div class="container">
@@ -93,6 +99,12 @@ document.querySelector('#app').innerHTML = `
     <section class="details-group">
         <span class="group-title">Document details</span>
 
+        <div class="details-actions">
+            <button id="analyze" disabled>
+                Analyze
+            </button>
+        </div>
+
         <div id="detailsEmpty">
             Select a document to view details.
         </div>
@@ -144,6 +156,17 @@ document.querySelector('#app').innerHTML = `
         </div>
     </section>
 
+    <section
+        id="analysisGroup"
+        class="details-group hidden"
+    >
+        <span class="group-title">
+            Static analysis
+        </span>
+
+        <div id="analysisResults"></div>
+    </section>
+
     <footer id="status">
         Ready
     </footer>
@@ -168,6 +191,9 @@ const collectButton =
 
 const statusElement =
     document.querySelector('#status');
+
+const analyzeButton =
+    document.querySelector('#analyze');
 
 sourceInput.addEventListener('input', updateButtons);
 outputInput.addEventListener('input', updateButtons);
@@ -289,6 +315,40 @@ collectButton.addEventListener('click', async () => {
     }
 });
 
+analyzeButton.addEventListener('click', async () => {
+    if (selectedDocument === null) {
+        return;
+    }
+
+    const doc = documents[selectedDocument];
+
+    try {
+        analyzeButton.disabled = true;
+
+        setStatus(
+            `Analyzing ${doc.name}...`
+        );
+
+        const analysis =
+            await AnalyzeDocument(doc);
+
+        renderAnalysis(analysis);
+
+        setStatus(
+            `Analysis complete — ${analysis.results.length} analyzer(s)`
+        );
+
+    } catch (error) {
+        console.error(error);
+
+        setStatus(
+            `Analysis failed: ${error}`
+        );
+    } finally {
+        analyzeButton.disabled = false;
+    }
+});
+
 function setBusy(busy) {
     sourceInput.disabled = busy;
     outputInput.disabled = busy;
@@ -376,8 +436,6 @@ let selectedDocument = null;
 function selectDocument(index) {
     selectedDocument = index;
 
-    const doc = documents[index];
-
     document
         .querySelectorAll('#documents tr')
         .forEach(row => {
@@ -392,7 +450,13 @@ function selectDocument(index) {
         row.classList.add('selected');
     }
 
+    const doc = documents[index];
+
     renderDetails(doc);
+
+    analyzeButton.disabled = false;
+
+    clearAnalysis();
 }
 
 function renderDetails(doc) {
@@ -425,6 +489,120 @@ function renderDetails(doc) {
 
     document.querySelector('#detailSHA256').value =
         doc.sha256 ?? '';
+}
+
+function renderAnalysis(analysis) {
+    const group =
+        document.querySelector('#analysisGroup');
+
+    const container =
+        document.querySelector('#analysisResults');
+
+    container.innerHTML = '';
+
+    group.classList.remove('hidden');
+
+    if (!analysis.results?.length) {
+        container.innerHTML = `
+            <div class="analysis-empty">
+                No analyzers configured for this category.
+            </div>
+        `;
+
+        return;
+    }
+
+    for (const result of analysis.results) {
+        const block = document.createElement('div');
+
+        block.className = 'analysis-result';
+
+        const state = analysisState(result);
+
+        block.innerHTML = `
+            <div class="analysis-header">
+
+                <strong>
+                    ${escapeHtml(result.analyzer)}
+                </strong>
+
+                <span class="analysis-state">
+                    ${state}
+                </span>
+
+                <span>
+                    Exit code:
+                    ${result.exitCode}
+                </span>
+
+            </div>
+
+            <div class="analysis-command">
+                ${escapeHtml(
+                    formatCommand(result)
+                )}
+            </div>
+
+            <label>stdout</label>
+
+            <textarea
+                readonly
+                class="analysis-output"
+            >${escapeHtml(result.stdout ?? '')}</textarea>
+
+            <label>stderr</label>
+
+            <textarea
+                readonly
+                class="analysis-output stderr"
+            >${escapeHtml(result.stderr ?? '')}</textarea>
+
+            ${
+                result.error
+                    ? `
+                        <div class="analysis-error">
+                            ${escapeHtml(result.error)}
+                        </div>
+                    `
+                    : ''
+            }
+        `;
+
+        container.appendChild(block);
+    }
+}
+
+function analysisState(result) {
+    if (result.timedOut) {
+        return 'TIMEOUT';
+    }
+
+    if (result.error) {
+        return 'ERROR';
+    }
+
+    if (result.exitCode === 0) {
+        return 'OK';
+    }
+
+    return 'EXIT ' + result.exitCode;
+}
+
+function formatCommand(result) {
+    return [
+        result.command,
+        ...(result.args ?? [])
+    ].join(' ');
+}
+
+function clearAnalysis() {
+    document
+        .querySelector('#analysisGroup')
+        .classList.add('hidden');
+
+    document.querySelector(
+        '#analysisResults'
+    ).innerHTML = '';
 }
 
 function formatSize(bytes) {

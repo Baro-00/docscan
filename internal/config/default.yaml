@@ -1,7 +1,44 @@
+tools_dir: C:\Users\bszyk\Documents\Projects\docscan\tools
+
+tools:
+  python:
+    type: command
+    command: python
+    timeout: 60
+
+  oleid:
+    type: command
+    command: oleid
+    timeout: 30
+
+  olevba:
+    type: command
+    command: olevba
+    timeout: 60
+
+  oleobj:
+    type: command
+    command: oleobj
+    timeout: 60
+
 categories:
   - name: PDF
     extensions:
       - .pdf
+
+    analyzers:
+      - name: PDF identifiers
+        tool: python
+        args:
+          - "{tools}\\DidierStevensSuite\\pdfid.py"
+          - "{file}"
+
+      - name: PDF statistics
+        tool: python
+        args:
+          - "{tools}\\DidierStevensSuite\\pdf-parser.py"
+          - "--stats"
+          - "{file}"
 
   - name: DOC
     extensions:
@@ -13,6 +50,22 @@ categories:
       - .dotm
       - .rtf
 
+    analyzers:
+      - name: OLE identification
+        tool: oleid
+        args:
+          - "{file}"
+
+      - name: VBA macros
+        tool: olevba
+        args:
+          - "{file}"
+
+      - name: Embedded objects
+        tool: oleobj
+        args:
+          - "{file}"
+
   - name: XLS
     extensions:
       - .xls
@@ -22,3 +75,19 @@ categories:
       - .xlt
       - .xltx
       - .xltm
+
+    analyzers:
+      - name: OLE identification
+        tool: oleid
+        args:
+          - "{file}"
+
+      - name: VBA macros
+        tool: olevba
+        args:
+          - "{file}"
+
+      - name: Embedded objects
+        tool: oleobj
+        args:
+          - "{file}"
