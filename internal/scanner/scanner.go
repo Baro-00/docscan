@@ -52,7 +52,7 @@ func Scan(
 			SourcePath: path,
 			Name:       entry.Name(),
 			Size:       info.Size(),
-			Type:       category,
+			Type:       document.Type(category),
 
 			MD5:    hashes.MD5,
 			SHA256: hashes.SHA256,

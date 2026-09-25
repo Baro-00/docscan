@@ -1,0 +1,342 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+
+    background: #f0f0f0;
+    color: #000;
+}
+
+.container {
+    padding: 14px;
+}
+
+header {
+    margin-bottom: 14px;
+}
+
+header h1 {
+    margin: 0;
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+header p {
+    margin: 2px 0 0;
+
+    color: #555;
+}
+
+/*
+ * Windows-style group box
+ */
+
+.group-box {
+    position: relative;
+
+    margin: 14px 0;
+    padding: 18px 10px 10px;
+
+    border: 1px solid #aaa;
+
+    background: #f0f0f0;
+}
+
+.group-title {
+    position: absolute;
+
+    top: -9px;
+    left: 8px;
+
+    padding: 0 5px;
+
+    background: #f0f0f0;
+}
+
+.path-row {
+    display: flex;
+    gap: 7px;
+
+    margin-bottom: 9px;
+}
+
+/*
+ * Path input
+ */
+
+.path-row {
+    display: flex;
+    gap: 7px;
+}
+
+input {
+    flex: 1;
+
+    height: 23px;
+
+    padding: 2px 5px;
+
+    border: 1px solid #7a7a7a;
+
+    background: #fff;
+    color: #000;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+
+    outline: none;
+}
+
+input:focus {
+    border-color: #0078d7;
+}
+
+/*
+ * Classic Windows button
+ */
+
+button {
+    min-width: 80px;
+    height: 24px;
+
+    padding: 1px 12px;
+
+    border: 1px solid #777;
+
+    border-radius: 0;
+
+    background:
+        linear-gradient(
+            #ffffff,
+            #e5e5e5
+        );
+
+    color: #000;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+
+    cursor: default;
+}
+
+button:hover:not(:disabled) {
+    border-color: #0078d7;
+
+    background:
+        linear-gradient(
+            #ffffff,
+            #eaf4fc
+        );
+}
+
+button:active:not(:disabled) {
+    background: #cce4f7;
+}
+
+button:disabled {
+    color: #999;
+
+    border-color: #aaa;
+
+    background: #e5e5e5;
+}
+
+/*
+ * Actions
+ */
+
+#scan {
+    margin-top: 10px;
+}
+
+/*
+ * Summary
+ */
+
+.summary {
+    display: flex;
+    gap: 25px;
+
+    margin: 14px 2px 8px;
+
+    color: #333;
+}
+
+.summary strong {
+    margin-left: 4px;
+}
+
+/*
+ * Results table
+ */
+
+.results {
+    height: 480px;
+
+    overflow: auto;
+
+    border: 1px solid #7a7a7a;
+
+    background: white;
+}
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 12px;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+
+    background: #f0f0f0;
+}
+
+th {
+    padding: 4px 6px;
+
+    text-align: left;
+
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #999;
+
+    font-weight: 400;
+}
+
+td {
+    height: 22px;
+
+    padding: 3px 6px;
+
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.details-group {
+    position: relative;
+
+    margin-top: 14px;
+    margin-bottom: 35px;
+
+    padding: 18px 10px 10px;
+
+    border: 1px solid #aaa;
+
+    background: #f0f0f0;
+}
+
+.hidden {
+    display: none;
+}
+
+#detailsEmpty {
+    color: #666;
+    padding: 5px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 7px;
+}
+
+.detail-row > span {
+    width: 75px;
+}
+
+.detail-row input {
+    flex: 1;
+}
+
+.detail-grid {
+    display: flex;
+    gap: 40px;
+
+    margin: 10px 0;
+}
+
+.detail-grid span {
+    margin-right: 5px;
+}
+
+.hash-input {
+    font-family: Consolas, monospace;
+}
+
+tbody tr {
+    cursor: default;
+}
+
+tbody tr.selected {
+    background: #0078d7;
+    color: white;
+}
+
+tbody tr.selected .hash {
+    color: white;
+}
+
+tbody tr:hover {
+    background: #e5f3ff;
+}
+
+.filename {
+    max-width: 400px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hash {
+    font-family: Consolas, monospace;
+}
+
+.document-status {
+    font-family: Consolas, monospace;
+}
+
+.unique {
+    color: #006400;
+}
+
+.duplicate {
+    color: #9a5d00;
+}
+
+/*
+ * Status bar
+ */
+
+footer {
+    position: fixed;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 23px;
+
+    padding: 3px 7px;
+
+    border-top: 1px solid #aaa;
+
+    background: #f0f0f0;
+
+    color: #333;
+}

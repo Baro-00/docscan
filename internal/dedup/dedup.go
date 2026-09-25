@@ -6,14 +6,18 @@ func Mark(documents []document.Document) {
 	seen := make(map[string]struct{})
 
 	for i := range documents {
-		hash := documents[i].SHA256
+		doc := &documents[i]
 
-		if _, exists := seen[hash]; exists {
-			documents[i].Duplicate = true
-			documents[i].CollectionStatus = document.StatusSkipped
+		doc.Duplicate = false
+		doc.CollectionStatus = document.StatusPending
+
+		if _, exists := seen[doc.SHA256]; exists {
+			doc.Duplicate = true
+			doc.CollectionStatus = document.StatusSkipped
+
 			continue
 		}
 
-		seen[hash] = struct{}{}
+		seen[doc.SHA256] = struct{}{}
 	}
 }
